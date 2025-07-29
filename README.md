@@ -1,36 +1,98 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Aave V3 Position Tracker
 
-## Getting Started
+A lightweight web application to track Aave V3 positions across multiple networks (Arbitrum and Avalanche).
 
-First, run the development server:
+## Features
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+-   **Multi-Network Support**: Track positions on Arbitrum One and Avalanche C-Chain
+-   **Real-time Data**: Fetches live data from Aave V3 contracts
+-   **USD Pricing**: All values displayed in USD using Aave Oracle prices
+-   **Comprehensive View**: Shows assets (aTokens), debts (variable/stable), and account health
+-   **User-Friendly Interface**: Clean, responsive design built with Next.js and Tailwind CSS
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## What it Shows
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Account Summary
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+-   Total Collateral (USD)
+-   Total Debt (USD)
+-   Health Factor
+-   Available to Borrow
+-   Loan to Value ratio
 
-## Learn More
+### Assets (aTokens)
 
-To learn more about Next.js, take a look at the following resources:
+-   Asset balances
+-   USD values
+-   Collateral status
+-   Current prices
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Debts
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+-   Variable debt positions
+-   Stable debt positions
+-   USD values per asset
 
-## Deploy on Vercel
+## Technology Stack
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+-   **Frontend**: Next.js 15, React 19, TypeScript
+-   **Blockchain Interaction**: Ethers.js v6
+-   **Styling**: Tailwind CSS
+-   **Data Source**: Aave V3 Protocol contracts
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Quick Start
+
+1. **Install Dependencies**:
+
+    ```bash
+    pnpm install
+    ```
+
+2. **Configure RPC URLs** (Optional):
+   Edit `.env.local` to add your Infura/Alchemy URLs for better performance:
+
+    ```env
+    NEXT_PUBLIC_ARBITRUM_RPC_URL=https://arbitrum-mainnet.infura.io/v3/YOUR_PROJECT_ID
+    NEXT_PUBLIC_AVALANCHE_RPC_URL=https://avalanche-mainnet.infura.io/v3/YOUR_PROJECT_ID
+    ```
+
+3. **Run Development Server**:
+
+    ```bash
+    pnpm dev
+    ```
+
+4. **Open your browser** and navigate to `http://localhost:3000`
+
+## Usage
+
+1. Select a network (Arbitrum or Avalanche)
+2. Enter an Ethereum address
+3. Click "Get Aave Position" to fetch data
+4. View the detailed breakdown of assets and debts
+
+## Contract Addresses
+
+### Arbitrum One
+
+-   **Pool**: `0x794a61358D6845594F94dc1DB02A252b5b4814aD`
+-   **Data Provider**: `0x69FA688f1Dc47d4B5d8029D5a35FB7a548310654`
+-   **Oracle**: `0xb56c2F0B653B2e0b10C9b928C8580Ac5Df02C7C7`
+
+### Avalanche C-Chain
+
+-   **Pool**: `0x794a61358D6845594F94dc1DB02A252b5b4814aD`
+-   **Data Provider**: `0x69FA688f1Dc47d4B5d8029D5a35FB7a548310654`
+-   **Oracle**: `0xEBd36016B3eD09D4693Ed4251c67Bd858c3c7C9C`
+
+## Security Features
+
+-   ✅ Input validation for Ethereum addresses
+-   ✅ Error handling for network issues
+-   ✅ Read-only contract interactions
+-   ✅ No private key requirements
+-   ✅ Secure RPC connections
+
+## Disclaimer
+
+This tool is for informational purposes only. Always verify important financial data through official Aave interfaces.
