@@ -8,22 +8,34 @@ import { EmptyState } from "@/components/EmptyState";
 import { PortfolioBreakdown } from "@/components/PortfolioBreakdown";
 import { Wallet } from "lucide-react";
 import { toast } from "sonner";
+import {useAaveDataMutation} from "@/queries/useAaveData";
+
+// Mock data for demonstration
+const mockPositionData = {
+  address: "0xBeb18cbbAD4Bb3586018D45c02047a2DD5777EaF",
+  network: "Arbitrum One",
+  totalCollateral: 420.27,
+  totalDebt: 262.84,
+  healthFactor: 1.31,
+  availableToBorrow: 63.83,
+  loanToValue: 77.73,
+};
 
 const HomeView = () => {
   const [walletAddress, setWalletAddress] = useState("");
   const [hasPosition, setHasPosition] = useState<boolean | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
 
-  // Mock data for demonstration
-  const mockPositionData = {
-    address: "0xBeb18cbbAD4Bb3586018D45c02047a2DD5777EaF",
-    network: "Arbitrum One",
-    totalCollateral: 420.27,
-    totalDebt: 262.84,
-    healthFactor: 1.31,
-    availableToBorrow: 63.83,
-    loanToValue: 77.73,
-  };
+  const { mutate: fetchData, isPending } = useAaveDataMutation({
+    onSuccess: (data) => {
+      if (data?.totalCollateral > 0) {
+        setHasPosition(true);
+        toast.success("Position data retrieved successfully");
+      } else {
+        setHasPosition(false);
+        toast.info("No positions found for this address");
+      }
+    }
+  });
 
   const mockPortfolioAssets = [
     { name: "ETH", value: 185.50, color: "hsl(217, 91%, 60%)" },
@@ -45,20 +57,7 @@ const HomeView = () => {
       return;
     }
 
-    setIsLoading(true);
-
-    // Simulate API call
-    setTimeout(() => {
-      // For demo purposes, show position if address matches mock data
-      if (walletAddress.toLowerCase() === mockPositionData.address.toLowerCase()) {
-        setHasPosition(true);
-        toast.success("Position data retrieved successfully");
-      } else {
-        setHasPosition(false);
-        toast.info("No positions found for this address");
-      }
-      setIsLoading(false);
-    }, 1000);
+    fetchData({ address: walletAddress.trim(), network: "arbitrum" });
   };
 
   return (
@@ -105,10 +104,10 @@ const HomeView = () => {
             </div>
             <Button
               onClick={handleGetPosition}
-              disabled={isLoading}
+              disabled={isPending}
               className="w-full h-12 bg-gradient-to-r from-primary to-accent hover:opacity-90 transition-opacity text-primary-foreground font-semibold"
             >
-              {isLoading ? "Fetching Position..." : "Get Position"}
+              {isPending ? "Fetching Position..." : "Get Position"}
             </Button>
           </div>
         </div>
