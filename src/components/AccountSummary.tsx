@@ -48,7 +48,7 @@ export const AccountSummary = ({
 }: AccountSummaryProps) => {
   const healthColor = getHealthFactorColor(healthFactor);
   const healthLabel = getHealthFactorLabel(healthFactor);
-  console.log(totalCollateral)
+
   return (
     <Card className="p-6 shadow-[var(--shadow-card)] hover:shadow-[var(--shadow-card-hover)] transition-[box-shadow] duration-300 bg-gradient-to-b from-card to-background border-border/50">
       <div className="space-y-6">

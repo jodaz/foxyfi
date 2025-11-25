@@ -33,7 +33,7 @@ export interface ReserveData {
 
 export interface AaveUserData {
     accountData: UserAccountData;
-    reserves: ReserveData[];
+    // reserves: ReserveData[];
     network: string;
     userAddress: string;
 }
@@ -187,82 +187,86 @@ export class AaveV3Service {
             }
 
             // Get account data and all reserves in parallel
-            const [accountData, reservesTokens] = await Promise.all([
+            // const [accountData, reservesTokens] = await Promise.all([
+            //     this.getUserAccountData(userAddress),
+            //     this.getAllReservesTokens(),
+            // ]);
+
+            // // Process each reserve
+            // const reservePromises = reservesTokens.map(async (reserve: any) => {
+            //     const { symbol, tokenAddress } = reserve;
+
+            //     try {
+            //         // Get user reserve data, token addresses, and price in parallel
+            //         const [
+            //             userReserveData,
+            //             tokenAddresses,
+            //             tokenInfo,
+            //             priceInUSD,
+            //         ] = await Promise.all([
+            //             this.getUserReserveData(tokenAddress, userAddress),
+            //             this.getReserveTokensAddresses(tokenAddress),
+            //             this.getTokenInfo(tokenAddress),
+            //             this.getAssetPrice(tokenAddress),
+            //         ]);
+
+            //         const {
+            //             currentATokenBalance,
+            //             currentStableDebt,
+            //             currentVariableDebt,
+            //             usageAsCollateralEnabled,
+            //         } = userReserveData;
+
+            //         const {
+            //             aTokenAddress,
+            //             stableDebtTokenAddress,
+            //             variableDebtTokenAddress,
+            //         } = tokenAddresses;
+
+            //         return {
+            //             symbol: symbol || tokenInfo.symbol,
+            //             tokenAddress,
+            //             aTokenAddress,
+            //             stableDebtTokenAddress,
+            //             variableDebtTokenAddress,
+            //             currentATokenBalance: ethers.formatUnits(
+            //                 currentATokenBalance,
+            //                 tokenInfo.decimals
+            //             ),
+            //             currentStableDebt: ethers.formatUnits(
+            //                 currentStableDebt,
+            //                 tokenInfo.decimals
+            //             ),
+            //             currentVariableDebt: ethers.formatUnits(
+            //                 currentVariableDebt,
+            //                 tokenInfo.decimals
+            //             ),
+            //             usageAsCollateralEnabled,
+            //             priceInUSD,
+            //             decimals: tokenInfo.decimals,
+            //         } as ReserveData;
+            //     } catch (error) {
+            //         console.error(`Error processing reserve ${symbol}:`, error);
+            //         return null;
+            //     }
+            // });
+
+            // const reserves = (await Promise.all(reservePromises))
+            //     .filter((reserve): reserve is ReserveData => reserve !== null)
+            //     .filter(
+            //         (reserve) =>
+            //             parseFloat(reserve.currentATokenBalance ?? "0") > 0 ||
+            //             parseFloat(reserve.currentStableDebt ?? "0") > 0 ||
+            //             parseFloat(reserve.currentVariableDebt ?? "0") > 0
+            //     );
+
+            const [accountData] = await Promise.all([
                 this.getUserAccountData(userAddress),
-                this.getAllReservesTokens(),
             ]);
-
-            // Process each reserve
-            const reservePromises = reservesTokens.map(async (reserve: any) => {
-                const { symbol, tokenAddress } = reserve;
-
-                try {
-                    // Get user reserve data, token addresses, and price in parallel
-                    const [
-                        userReserveData,
-                        tokenAddresses,
-                        tokenInfo,
-                        priceInUSD,
-                    ] = await Promise.all([
-                        this.getUserReserveData(tokenAddress, userAddress),
-                        this.getReserveTokensAddresses(tokenAddress),
-                        this.getTokenInfo(tokenAddress),
-                        this.getAssetPrice(tokenAddress),
-                    ]);
-
-                    const {
-                        currentATokenBalance,
-                        currentStableDebt,
-                        currentVariableDebt,
-                        usageAsCollateralEnabled,
-                    } = userReserveData;
-
-                    const {
-                        aTokenAddress,
-                        stableDebtTokenAddress,
-                        variableDebtTokenAddress,
-                    } = tokenAddresses;
-
-                    return {
-                        symbol: symbol || tokenInfo.symbol,
-                        tokenAddress,
-                        aTokenAddress,
-                        stableDebtTokenAddress,
-                        variableDebtTokenAddress,
-                        currentATokenBalance: ethers.formatUnits(
-                            currentATokenBalance,
-                            tokenInfo.decimals
-                        ),
-                        currentStableDebt: ethers.formatUnits(
-                            currentStableDebt,
-                            tokenInfo.decimals
-                        ),
-                        currentVariableDebt: ethers.formatUnits(
-                            currentVariableDebt,
-                            tokenInfo.decimals
-                        ),
-                        usageAsCollateralEnabled,
-                        priceInUSD,
-                        decimals: tokenInfo.decimals,
-                    } as ReserveData;
-                } catch (error) {
-                    console.error(`Error processing reserve ${symbol}:`, error);
-                    return null;
-                }
-            });
-
-            const reserves = (await Promise.all(reservePromises))
-                .filter((reserve): reserve is ReserveData => reserve !== null)
-                .filter(
-                    (reserve) =>
-                        parseFloat(reserve.currentATokenBalance ?? "0") > 0 ||
-                        parseFloat(reserve.currentStableDebt ?? "0") > 0 ||
-                        parseFloat(reserve.currentVariableDebt ?? "0") > 0
-                );
-
+            
             return {
                 accountData,
-                reserves,
+                // reserves,
                 network: this.networkConfig.name,
                 userAddress,
             };
