@@ -5,7 +5,7 @@ import {
     formatCurrency,
     formatNumber,
     getHealthFactorColor,
-    getHealthFactorStatus,
+    // getHealthFactorStatus,
     calculateUSDValue,
     formatAddress,
 } from "../lib/utils";
@@ -15,8 +15,8 @@ interface Props {
 }
 
 export default function UserDataDisplay({ data }: Props) {
-    const totalCollateralUSD = parseFloat(data.accountData.totalCollateralBase);
-    const totalDebtUSD = parseFloat(data.accountData.totalDebtBase);
+    // const totalCollateralUSD = parseFloat(data.accountData.totalCollateralBase);
+    // const totalDebtUSD = parseFloat(data.accountData.totalDebtBase);
 
     return (
         <div className="space-y-6">

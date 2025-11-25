@@ -13,7 +13,7 @@ export const NETWORKS: Record<string, NetworkConfig> = {
         name: "Arbitrum One",
         chainId: 42161,
         rpcUrl:
-            process.env.NEXT_PUBLIC_ARBITRUM_RPC_URL ||
+            process.env.ARBITRUM_RPC_URL ||
             "https://arb1.arbitrum.io/rpc",
         pool: "0x794a61358D6845594F94dc1DB02A252b5b4814aD",
         aaveProtocolDataProvider: "0x69FA688f1Dc47d4B5d8029D5a35FB7a548310654",
@@ -23,7 +23,7 @@ export const NETWORKS: Record<string, NetworkConfig> = {
         name: "Avalanche C-Chain",
         chainId: 43114,
         rpcUrl:
-            process.env.NEXT_PUBLIC_AVALANCHE_RPC_URL ||
+            process.env.AVALANCHE_RPC_URL ||
             "https://api.avax.network/ext/bc/C/rpc",
         pool: "0x794a61358D6845594F94dc1DB02A252b5b4814aD",
         aaveProtocolDataProvider: "0x69FA688f1Dc47d4B5d8029D5a35FB7a548310654",
