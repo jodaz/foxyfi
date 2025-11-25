@@ -11,42 +11,26 @@ import { toast } from "sonner";
 import { useAaveDataMutation } from "@/queries/useAaveData";
 import { AaveUserData } from "@/lib/aave";
 
-// Mock data for demonstration
-// const mockPositionData = {
-//   address: "0xBeb18cbbAD4Bb3586018D45c02047a2DD5777EaF",
-//   network: "Arbitrum One",
-//   totalCollateral: 420.27,
-//   totalDebt: 262.84,
-//   healthFactor: 1.31,
-//   availableToBorrow: 63.83,
-//   loanToValue: 77.73,
-// };
-
 const HomeView = () => {
   const [walletAddress, setWalletAddress] = useState("");
   const [hasPosition, setHasPosition] = useState<boolean | null>(null);
-  const [positionData, setPositionData] = useState<
-    (AaveUserData & { totalCollateral: number }) | null
-  >(null);
 
   const {
     mutate: fetchData,
     isPending,
+    data
   } = useAaveDataMutation({
     onSuccess: (data: AaveUserData & { totalCollateral: number }) => {
       if (data?.totalCollateral > 0) {
         setHasPosition(true);
-        setPositionData(data);
         toast.success("Position data retrieved successfully");
       } else {
         setHasPosition(false);
-        setPositionData(null);
         toast.info("No positions found for this address");
       }
     },
     onError: (error: Error) => {
       setHasPosition(null);
-      setPositionData(null);
       toast.error(error.message || "An unexpected error occurred");
     },
   });
@@ -73,8 +57,11 @@ const HomeView = () => {
     }
 
     // @ts-ignore
-    fetchData({ address: walletAddress.trim(), network: "arbitrum" });
+    fetchData({ address: walletAddress.trim(), network: "avalanche" });
   };
+
+  // @ts-ignore
+  const positionData = data?.userData ?? null;
 
   return (
     <div className="min-h-screen bg-background py-8 px-4 sm:px-6 lg:px-8">
@@ -136,7 +123,8 @@ const HomeView = () => {
                 <AccountSummary
                   address={positionData.userAddress}
                   network={positionData.network}
-                  totalCollateral={positionData.totalCollateral}
+                  // @ts-ignore
+                  totalCollateral={data.totalCollateral}
                   totalDebt={parseFloat(
                     positionData.accountData.totalDebtBase
                   )}

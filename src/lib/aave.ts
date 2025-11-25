@@ -255,9 +255,9 @@ export class AaveV3Service {
                 .filter((reserve): reserve is ReserveData => reserve !== null)
                 .filter(
                     (reserve) =>
-                        parseFloat(reserve.currentATokenBalance) > 0 ||
-                        parseFloat(reserve.currentStableDebt) > 0 ||
-                        parseFloat(reserve.currentVariableDebt) > 0
+                        parseFloat(reserve.currentATokenBalance ?? "0") > 0 ||
+                        parseFloat(reserve.currentStableDebt ?? "0") > 0 ||
+                        parseFloat(reserve.currentVariableDebt ?? "0") > 0
                 );
 
             return {
