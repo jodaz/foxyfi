@@ -99,6 +99,7 @@ export const PortfolioBreakdown = ({ assets }: PortfolioBreakdownProps) => {
                 cx="50%"
                 cy="50%"
                 labelLine={false}
+                // @ts-ignore
                 label={({ percentage }) => `${percentage}%`}
                 outerRadius={100}
                 innerRadius={60}

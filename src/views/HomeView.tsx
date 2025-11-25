@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { AccountSummary } from "@/components/AccountSummary";
 import { EmptyState } from "@/components/EmptyState";
-import { PortfolioBreakdown } from "@/components/PortfolioBreakdown";
+// import { PortfolioBreakdown } from "@/components/PortfolioBreakdown";
 import { Wallet } from "lucide-react";
 import { toast } from "sonner";
 import { useAaveDataMutation } from "@/queries/useAaveData";
@@ -51,14 +51,14 @@ const HomeView = () => {
     },
   });
 
-  const portfolioAssets =
-    positionData?.reserves.map((reserve) => ({
-      name: reserve.symbol,
-      value:
-        parseFloat(reserve.currentATokenBalance) *
-        parseFloat(reserve.priceInUSD),
-      color: `hsl(${Math.random() * 360}, 70%, 50%)`, // Generate random color for now
-    })) || [];
+  // const portfolioAssets =
+  //   positionData?.reserves.map((reserve) => ({
+  //     name: reserve.symbol,
+  //     value:
+  //       parseFloat(reserve.currentATokenBalance) *
+  //       parseFloat(reserve.priceInUSD),
+  //     color: `hsl(${Math.random() * 360}, 70%, 50%)`, // Generate random color for now
+  //   })) || [];
 
   const handleGetPosition = () => {
     if (!walletAddress.trim()) {
@@ -72,6 +72,7 @@ const HomeView = () => {
       return;
     }
 
+    // @ts-ignore
     fetchData({ address: walletAddress.trim(), network: "arbitrum" });
   };
 
@@ -149,7 +150,7 @@ const HomeView = () => {
                   )}
                   loanToValue={parseFloat(positionData.accountData.ltv)}
                 />
-                <PortfolioBreakdown assets={portfolioAssets} />
+                {/* <PortfolioBreakdown assets={portfolioAssets} /> */}
               </>
             ) : hasPosition === false ? (
               <EmptyState
