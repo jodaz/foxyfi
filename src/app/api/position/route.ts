@@ -15,9 +15,8 @@ export async function POST(request: Request) {
 
         const aaveService = new AaveV3Service(network);
         const userData = await aaveService.getUserAaveData(address);
-        console.log(userData)
         const totalCollateral = parseFloat(userData.accountData.totalCollateralBase);
-
+        console.log(totalCollateral)
         return NextResponse.json({ userData, totalCollateral });
     } catch (error) {
         if (error instanceof AppError) {

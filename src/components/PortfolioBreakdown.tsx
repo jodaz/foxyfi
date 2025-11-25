@@ -71,6 +71,9 @@ const renderLegend = (props: any) => {
   );
 };
 
+/* For fixing
+this component should reserve the reserves
+*/
 export const PortfolioBreakdown = ({ assets }: PortfolioBreakdownProps) => {
   const total = assets.reduce((sum, asset) => sum + asset.value, 0);
   
@@ -78,6 +81,17 @@ export const PortfolioBreakdown = ({ assets }: PortfolioBreakdownProps) => {
     ...asset,
     percentage: ((asset.value / total) * 100).toFixed(2),
   }));
+
+  // 
+  // const retrievePositionAssets = () =>
+  //   // @ts-ignore
+  //   positionData?.reserves.map((reserve) => ({
+  //     name: reserve.symbol,
+  //     value:
+  //       parseFloat(reserve.currentATokenBalance) *
+  //       parseFloat(reserve.priceInUSD),
+  //     color: `hsl(${Math.random() * 360}, 70%, 50%)`, // Generate random color for now
+  //   })) || [];
 
   return (
     <Card className="p-6 shadow-[var(--shadow-card)] hover:shadow-[var(--shadow-card-hover)] transition-[box-shadow] duration-300 bg-gradient-to-b from-card to-background border-border/50">
