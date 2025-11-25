@@ -8,42 +8,57 @@ import { EmptyState } from "@/components/EmptyState";
 import { PortfolioBreakdown } from "@/components/PortfolioBreakdown";
 import { Wallet } from "lucide-react";
 import { toast } from "sonner";
-import {useAaveDataMutation} from "@/queries/useAaveData";
+import { useAaveDataMutation } from "@/queries/useAaveData";
+import { AaveUserData } from "@/lib/aave";
 
 // Mock data for demonstration
-const mockPositionData = {
-  address: "0xBeb18cbbAD4Bb3586018D45c02047a2DD5777EaF",
-  network: "Arbitrum One",
-  totalCollateral: 420.27,
-  totalDebt: 262.84,
-  healthFactor: 1.31,
-  availableToBorrow: 63.83,
-  loanToValue: 77.73,
-};
+// const mockPositionData = {
+//   address: "0xBeb18cbbAD4Bb3586018D45c02047a2DD5777EaF",
+//   network: "Arbitrum One",
+//   totalCollateral: 420.27,
+//   totalDebt: 262.84,
+//   healthFactor: 1.31,
+//   availableToBorrow: 63.83,
+//   loanToValue: 77.73,
+// };
 
 const HomeView = () => {
   const [walletAddress, setWalletAddress] = useState("");
   const [hasPosition, setHasPosition] = useState<boolean | null>(null);
+  const [positionData, setPositionData] = useState<
+    (AaveUserData & { totalCollateral: number }) | null
+  >(null);
 
-  const { mutate: fetchData, isPending } = useAaveDataMutation({
-    onSuccess: (data) => {
+  const {
+    mutate: fetchData,
+    isPending,
+  } = useAaveDataMutation({
+    onSuccess: (data: AaveUserData & { totalCollateral: number }) => {
       if (data?.totalCollateral > 0) {
         setHasPosition(true);
+        setPositionData(data);
         toast.success("Position data retrieved successfully");
       } else {
         setHasPosition(false);
+        setPositionData(null);
         toast.info("No positions found for this address");
       }
-    }
+    },
+    onError: (error: Error) => {
+      setHasPosition(null);
+      setPositionData(null);
+      toast.error(error.message || "An unexpected error occurred");
+    },
   });
 
-  const mockPortfolioAssets = [
-    { name: "ETH", value: 185.50, color: "hsl(217, 91%, 60%)" },
-    { name: "USDC", value: 125.30, color: "hsl(189, 94%, 43%)" },
-    { name: "WBTC", value: 68.75, color: "hsl(38, 92%, 50%)" },
-    { name: "ARB", value: 28.42, color: "hsl(142, 71%, 45%)" },
-    { name: "LINK", value: 12.30, color: "hsl(271, 76%, 53%)" },
-  ];
+  const portfolioAssets =
+    positionData?.reserves.map((reserve) => ({
+      name: reserve.symbol,
+      value:
+        parseFloat(reserve.currentATokenBalance) *
+        parseFloat(reserve.priceInUSD),
+      color: `hsl(${Math.random() * 360}, 70%, 50%)`, // Generate random color for now
+    })) || [];
 
   const handleGetPosition = () => {
     if (!walletAddress.trim()) {
@@ -115,25 +130,33 @@ const HomeView = () => {
         {/* Results Section */}
         {hasPosition !== null && (
           <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 space-y-6">
-            {hasPosition ? (
+            {hasPosition === true && positionData ? (
               <>
                 <AccountSummary
-                  address={walletAddress}
-                  network={mockPositionData.network}
-                  totalCollateral={mockPositionData.totalCollateral}
-                  totalDebt={mockPositionData.totalDebt}
-                  healthFactor={mockPositionData.healthFactor}
-                  availableToBorrow={mockPositionData.availableToBorrow}
-                  loanToValue={mockPositionData.loanToValue}
+                  address={positionData.userAddress}
+                  network={positionData.network}
+                  totalCollateral={positionData.totalCollateral}
+                  totalDebt={parseFloat(
+                    positionData.accountData.totalDebtBase
+                  )}
+                  healthFactor={
+                    positionData.accountData.healthFactor === "∞"
+                      ? Infinity
+                      : parseFloat(positionData.accountData.healthFactor)
+                  }
+                  availableToBorrow={parseFloat(
+                    positionData.accountData.availableBorrowsBase
+                  )}
+                  loanToValue={parseFloat(positionData.accountData.ltv)}
                 />
-                <PortfolioBreakdown assets={mockPortfolioAssets} />
+                <PortfolioBreakdown assets={portfolioAssets} />
               </>
-            ) : (
+            ) : hasPosition === false ? (
               <EmptyState
                 address={walletAddress}
-                network={mockPositionData.network}
+                network={positionData?.network || "arbitrum"}
               />
-            )}
+            ) : null}
           </div>
         )}
       </div>
